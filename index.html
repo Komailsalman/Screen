@@ -3,251 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>لوحة التحكم</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-      direction: rtl;
-    }
-
-    header {
-      background-color: #4a90e2;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      font-size: 24px;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 30px auto;
-      padding: 20px;
-      background-color: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .upload-section {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    input[type="file"] {
-      flex: 1;
-    }
-
-    button {
-      background-color: #4a90e2;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background-color: #3b7cc2;
-    }
-
-    .image-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-    }
-
-    .image-card {
-      background: #fafafa;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 10px;
-      text-align: center;
-      position: relative;
-    }
-
-    .image-card img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    .image-card input[type="number"] {
-      width: 60px;
-      padding: 4px;
-      font-size: 14px;
-    }
-
-    .delete-btn {
-      background-color: crimson;
-      margin-top: 10px;
-    }
-
-    .drag-handle {
-      cursor: move;
-      font-size: 20px;
-      color: #888;
-      position: absolute;
-      top: 10px;
-      left: 10px;
-    }
-  </style>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <header>
     لوحة التحكم في العرض
   </header>
-
+  
   <div class="container">
-    <div class="upload-section">
-      <input type="file" id="upload" accept="image/*">
-      <button onclick="uploadImage()">رفع</button>
-      <button onclick="syncData()">مزامنة</button>
-    </div>
+    <input type="file" id="upload" accept="image/*">
+    <button onclick="uploadImage()">رفع الصورة</button>
+    <button onclick="fetchLogs()">عرض السجلات</button>
 
-    <div class="image-grid" id="imageList"></div>
+    <div id="logs"></div>
   </div>
 
-  <script>
-   // 1. التهيئة
-const firebaseConfig = {
-  apiKey: "AIzaSyCcinWZPrS3QOGKoK4AeVJ1-1IWX6FUo0I",
-  authDomain: "screens-d0a32.firebaseapp.com",
-  projectId: "screens-d0a32",
-  storageBucket: "screens-d0a32.appspot.com",
-  messagingSenderId: "743937684428",
-  appId: "1:743937684428:web:6a99133d93a8ed438ee369",
-  measurementId: "G-NJ5FZRDXDH"
-};
+  <!-- تحميل مكتبة supabase-js قبل main.js -->
+ <!-- تحميل مكتبة Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/supabase.min.js"></script>
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const storage = firebase.storage(); // ← لازم يكون فوق قبل أي استخدام
+<!-- تحميل ملف JavaScript الرئيسي بعد المكتبة -->
+<script src="main.js"></script>
 
-
-function uploadImage() {
-  const fileInput = document.getElementById('upload');
-  const file = fileInput.files[0];
-  if (!file) return;
-
-  const storageRef = storage.ref('images/' + file.name);
-
-  storageRef.put(file).then(snapshot => {
-    return snapshot.ref.getDownloadURL();
-  }).then(downloadURL => {
-    images.push({ src: downloadURL, duration: 5 });
-    renderImages();
-    fileInput.value = '';
-  }).catch(error => {
-    alert('خطأ في رفع الصورة: ' + error.message);
-  });
-}
-
-
-    let images = [];
-
-    const imageList = document.getElementById('imageList');
-
-    function renderImages() {
-      imageList.innerHTML = '';
-      images.forEach((img, i) => {
-        const card = document.createElement('div');
-        card.className = 'image-card';
-        card.setAttribute('draggable', true);
-        card.setAttribute('data-index', i);
-
-        card.innerHTML = `
-          <div class="drag-handle">☰</div>
-          <img src="${img.src}" alt="صورة">
-          <p>${img.src}</p>
-          <label>المدة (ثواني):</label>
-          <input type="number" min="1" value="${img.duration}" onchange="updateDuration(${i}, this.value)">
-          <br>
-          <button class="delete-btn" onclick="deleteImage(${i})">حذف</button>
-        `;
-
-        addDragEvents(card);
-        imageList.appendChild(card);
-      });
-    }
-
-    function uploadImage() {
-      const fileInput = document.getElementById('upload');
-      const file = fileInput.files[0];
-      if (!file) return;
-
-      const storageRef = storage.ref('images/' + file.name);
-
-      storageRef.put(file).then(snapshot => {
-        return snapshot.ref.getDownloadURL();
-      }).then(downloadURL => {
-        images.push({ src: downloadURL, duration: 5 });
-        renderImages();
-        fileInput.value = '';
-      }).catch(error => {
-        alert('خطأ في رفع الصورة: ' + error.message);
-      });
-    }
-
-    function deleteImage(index) {
-      images.splice(index, 1);
-      renderImages();
-    }
-
-    function updateDuration(index, value) {
-      images[index].duration = parseInt(value);
-    }
-
-    function syncData() {
-      db.collection("slideshow").doc("current").set({
-        images: images
-      }).then(() => {
-        alert("✅ تمت مزامنة البيانات");
-      });
-    }
-
-    let draggedIndex;
-
-    function addDragEvents(card) {
-      card.addEventListener('dragstart', (e) => {
-        draggedIndex = parseInt(card.getAttribute('data-index'));
-        e.dataTransfer.effectAllowed = 'move';
-        card.style.opacity = 0.5;
-      });
-
-      card.addEventListener('dragend', () => {
-        card.style.opacity = 1;
-      });
-
-      card.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-      });
-
-      card.addEventListener('drop', (e) => {
-        e.preventDefault();
-        const targetIndex = parseInt(card.getAttribute('data-index'));
-        if (draggedIndex !== targetIndex) {
-          const draggedItem = images[draggedIndex];
-          images.splice(draggedIndex, 1);
-          images.splice(targetIndex, 0, draggedItem);
-          renderImages();
-        }
-      });
-    }
-
-    renderImages();
-  </script>
 </body>
 </html>
