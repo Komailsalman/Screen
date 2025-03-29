@@ -1,7 +1,7 @@
 // إعداد Supabase
 const SUPABASE_URL = "https://npwmyyolczavvalggskr.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wd215eW9sY3phdnZhbGdnc2tyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMyMTUwMTcsImV4cCI6MjA1ODc5MTAxN30.2VGsw5WdNu9LiNdb5dG2J62ipRQveSwj55IX-C2xSKU";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let images = [];
 let index = 0;
