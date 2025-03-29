@@ -1,7 +1,10 @@
-// إعداد Supabase
+// ✅ إعداد Supabase
 const SUPABASE_URL = "https://npwmyyolczavvalggskr.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wd215eW9sY3phdnZhbGdnc2tyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMyMTUwMTcsImV4cCI6MjA1ODc5MTAxN30.2VGsw5WdNu9LiNdb5dG2J62ipRQveSwj55IX-C2xSKU";
-const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);  // ✅ لاحظ هنا إننا استخدمنا supabase.createClient
+
+console.log("✅ Supabase جاهز للاستخدام.");
 
 let images = [];
 let index = 0;
@@ -26,7 +29,7 @@ async function uploadImage() {
     { action: 'رفع صورة', image_url: publicURL }
   ]);
 
-  alert('✅ تم رفع الصورة بنجاح!');
+  alert('✅ تم رفع الصورة بنجاح!");
 }
 
 // جلب السجلات من قاعدة البيانات
@@ -70,3 +73,4 @@ function showImage() {
 if (document.getElementById('slideshow')) {
   fetchImages();
 }
+
