@@ -1,22 +1,7 @@
-// تعريف Supabase
+// إعداد Supabase
 const SUPABASE_URL = "https://npwmyyolczavvalggskr.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wd215eW9sY3phdnZhbGdnc2tyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMyMTUwMTcsImV4cCI6MjA1ODc5MTAxN30.2VGsw5WdNu9LiNdb5dG2J62ipRQveSwj55IX-C2xSKU";
-
-let supabase;
-<!-- ضع هذا السكربت داخل <head> أو فوق ملف main.js مباشرة -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/supabase.min.js"></script>
-
-
-// تأكد من تحميل مكتبة supabase-js بنجاح
-if (typeof SupabaseClient === 'undefined') {
-  console.error("❌ مكتبة supabase-js لم يتم تحميلها بشكل صحيح. تأكد من الرابط المستخدم.");
-} else {
-  console.log("✅ مكتبة supabase-js تم تحميلها بنجاح.");
-  supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-}
-
-// الآن أصبح عندنا متغير supabase جاهز للاستخدام
-
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let images = [];
 let index = 0;
@@ -54,7 +39,7 @@ async function fetchLogs() {
   }
 
   const logsDiv = document.getElementById('logs');
-  logsDiv.innerHTML = JSON.stringify(data, null, 2);
+  logsDiv.innerHTML = data.map(log => `<p>${log.action}: ${log.image_url}</p>`).join('');
 }
 
 // جلب الصور من قاعدة البيانات لعرضها في viewer.html
